@@ -1,0 +1,24 @@
+title: Documentação — Confeitaria
+description: >-
+  Documentação técnica do sistema de gestão da Docuras da Nalá: rotas do
+  backend, regras do frontend, modelo de dados e arquitetura de infraestrutura.
+remote_theme: just-the-docs/just-the-docs
+color_scheme: light
+
+url: "https://docuras-da-nala-confeitaria.github.io"
+baseurl: "/documentation"
+
+nav_sort: case_sensitive
+search_enabled: true
+
+mermaid:
+  version: "10.9.1"
+
+aux_links:
+  "Repositório do backend":
+    - "https://github.com/docuras-da-nala-confeitaria"
+
+footer_content: "Documentação gerada a partir do código-fonte do sistema. Evolui junto com o código via commits/PRs neste repositório."
+
+plugins:
+  - jekyll-remote-theme
