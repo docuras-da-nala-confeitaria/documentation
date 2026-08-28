@@ -33,6 +33,15 @@ nav_order: 4
 - `EditorReceita`/`EditorEmbalagem`: edição 100% local até salvar via
   `PUT`; validações client completas (rendimento/peso > 0, ao menos 1
   componente, nome/quantidade/tempo obrigatórios e > 0 em cada item).
+- Seleção de ingrediente (Ficha Técnica e Embalagem) e de recurso de
+  produção (custo de produção, na Ficha Técnica) usa um campo de busca
+  com autocompletar (`Combobox`, genérico e reutilizado nos três
+  lugares) no lugar do antigo `<select>` HTML — digita parte do nome,
+  filtra a lista (já carregada inteira no client) por
+  correspondência case-insensitive, navega com as setas e confirma com
+  Enter ou clique. A sugestão mostra a unidade de medida do ingrediente,
+  ou o custo por hora do recurso (ex.: "R$ 2,50/h"), ao lado do nome
+  para ajudar a diferenciar itens parecidos.
 - `ModalRegistrarProducao`: pré-preenche quantidade com o rendimento e
   validade com hoje; valida quantidade inteira > 0 e validade não
   anterior a hoje; 404 de receita mostra aviso específico com link para

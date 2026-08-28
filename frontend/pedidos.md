@@ -10,6 +10,14 @@ nav_order: 6
 - Novo pedido: carrega apenas canais `ATIVO`, pré-seleciona o primeiro
   automaticamente; itens montados localmente, enviados juntos no `POST
   /pedidos`.
+- Seleção de cliente em `/pedidos/novo` é um campo de busca com
+  autocompletar (`Combobox`, compartilhado em
+  `app/(app)/_components/Combobox.tsx`) em vez de um `<select>` simples —
+  filtra a lista já carregada (`GET /clientes`) digitando nome **ou
+  telefone**. Continua guardando só o `id` do cliente no estado, sem
+  mudança na validação de campo obrigatório nem no cálculo do endereço.
+  Em `/pedidos/[id]` o cliente não é editável (exibido como texto),
+  então não recebeu essa mudança.
 - O valor unitário de um item não vem mais de um `preco_venda` fixo do
   produto — vem do **preço praticado daquele produto no canal
   selecionado do pedido** (`GET
