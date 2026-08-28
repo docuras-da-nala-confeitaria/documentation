@@ -8,14 +8,26 @@ nav_order: 4
 # Produtos (`/produtos`)
 
 - `GET /produtos?categoria_id=&status=&modo_producao=` — filtros combináveis.
-- `GET /produtos/{id}` — inclui campos calculados: `custoAtual` (via receita,
-  `null` se não houver), `lucroPorUnidade = precoVenda - custoAtual`,
-  `margemLucroPercentual` (só se `precoVenda != 0`).
-- `POST /produtos` — `nome`, `categoriaId` (deve existir), `peso`,
-  `precoVenda`, `status`, `modoProducao`.
+- `GET /produtos/{id}` — `id`, `nome`, `categoriaId`, `peso`, `status`,
+  `modoProducao`. **Removido**: `precoVenda`, `custoAtual`,
+  `lucroPorUnidade`, `margemLucroPercentual` não fazem mais parte do DTO —
+  o preço de venda passou a ser por canal (ver `GET
+  /produtos/{produtoId}/precos-canal` em [Precificação](precificacao.md)).
+- `POST /produtos` — `nome`, `categoriaId` (deve existir), `peso`, `status`,
+  `modoProducao`. **Removido**: `precoVenda` não é mais um campo do produto.
 - `PATCH /produtos/{id}` — sem `@Valid`; substitui todos os campos.
 - `PATCH /produtos/{id}/status` — ativa/inativa (não afeta pedidos/estoque
   existentes).
+
+## Preço de venda por canal
+
+Não existe mais um `precoVenda` único por produto — o preço praticado passa
+a ser por combinação produto+canal, cadastrado via
+[Precificação](precificacao.md) (`PUT
+/produtos/{produtoId}/precificacao/canal/{canalVendaId}/preco-praticado`) e
+consultado via `GET /produtos/{produtoId}/precos-canal` (lista `{
+canalVendaId, canalVendaNome, preco, margem }`, uma linha por canal já
+precificado).
 
 ## Canais de Venda (`/canais-venda`)
 

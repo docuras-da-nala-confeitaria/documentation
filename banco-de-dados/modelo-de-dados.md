@@ -9,7 +9,7 @@ nav_order: 1
 
 Todas as tabelas usam `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`,
 salvo indicação em contrário. Reconstruído a partir das migrations Flyway
-`V1` a `V14`.
+`V1` a `V16`.
 
 ## usuarios
 
@@ -46,13 +46,16 @@ salvo indicação em contrário. Reconstruído a partir das migrations Flyway
 | nome | VARCHAR(255) NOT NULL | |
 | categoria_id | UUID NOT NULL REFERENCES categorias | |
 | peso | NUMERIC(14,4) NOT NULL | |
-| preco_venda | NUMERIC(14,2) | |
 | status | VARCHAR(20) NOT NULL DEFAULT 'ATIVO' | |
 | modo_producao | VARCHAR(20) NOT NULL | |
 
 > A coluna `embalagem_id` existia no schema original (`V1`) mas foi
 > removida na `V11`, substituída pela tabela `embalagens` (múltiplos
 > componentes).
+>
+> A coluna `preco_venda` existia desde `V1` mas foi removida na `V16` — o
+> preço de venda passou a ser por combinação produto+canal, ver
+> `produto_preco_canal` abaixo.
 
 ## receitas
 
@@ -156,6 +159,31 @@ Substitui o antigo enum fixo `canal_venda` em `pedidos`.
 
 > `gas_energia` e `mao_de_obra` (colunas originais do `V1`) foram
 > removidas na `V12`, sem migração de dados históricos.
+>
+> `margem_minima`, `margem_premium`, `preco_minimo` e `preco_premium`
+> continuam existindo na tabela (nenhuma migration as removeu), mas desde
+> a introdução da tabela `produto_preco_canal` (`V15`) deixaram de ser
+> calculadas — ficam sempre `NULL` em registros novos. `preco_praticado`
+> também para de ser escrito por qualquer fluxo novo — o preço vigente por
+> canal passou a morar em `produto_preco_canal`.
+
+## produto_preco_canal (`V15`)
+
+Preço vigente (o que a confeitaria realmente cobra) de um produto num
+canal de venda — desacoplado do histórico de cálculos em `precificacoes`
+justamente para não ser apagado silenciosamente por um recálculo
+automático de custo. Uma confirmação de preço faz **upsert** aqui (nunca
+guarda histórico de mudanças do preço praticado em si).
+
+| Coluna | Tipo | Observações |
+|---|---|---|
+| produto_id | UUID NOT NULL REFERENCES produtos | |
+| canal_venda_id | UUID NOT NULL REFERENCES canais_venda | |
+| preco | NUMERIC(14,2) NOT NULL | |
+| atualizado_em | TIMESTAMP NOT NULL | |
+
+> `UNIQUE (produto_id, canal_venda_id)` — só existe um preço vigente por
+> produto+canal.
 
 ## clientes
 
