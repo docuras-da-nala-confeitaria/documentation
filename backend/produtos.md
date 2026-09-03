@@ -38,3 +38,22 @@ precificado).
   mudarem**, dispara evento `CustoCanalVendaAtualizadoEvent` → recálculo
   automático de precificação de todos os produtos cujo **último** cálculo
   usou esse canal. Mudar apenas nome/status não recalcula nada.
+
+## Cardápio dinâmico (`GET /produtos/cardapio`)
+
+- `GET /produtos/cardapio?canal_venda_id=&categoria_id=` — gera e devolve
+  uma imagem PNG do cardápio (`Content-Type: image/png`), montada a
+  partir dos produtos ativos com preço cadastrado no canal informado,
+  agrupados por categoria.
+- `canal_venda_id` — obrigatório. 404 se o canal não existe ou está
+  inativo.
+- `categoria_id` — opcional, repetível
+  (`?categoria_id=A&categoria_id=B`). Restringe o cardápio a essas
+  categorias; omitido = todas as categorias. Id de categoria que não
+  existe é ignorado (sem erro).
+- Produto ativo **sem** preço cadastrado nesse canal específico fica
+  oculto do cardápio (não aparece como linha em branco).
+- Internamente, o endpoint repassa a chamada para o `cardapio-service`
+  (serviço Python interno, não exposto à internet, que desenha a imagem
+  com Pillow e lê o banco direto) — 502 se esse serviço estiver fora do
+  ar ou responder algo inesperado.
