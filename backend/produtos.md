@@ -57,3 +57,15 @@ precificado).
   (serviço Python interno, não exposto à internet, que desenha a imagem
   com Pillow e lê o banco direto) — 502 se esse serviço estiver fora do
   ar ou responder algo inesperado.
+
+## Categorias de produto
+
+- `GET /categorias` — lista todas as categorias.
+- `POST /categorias` — cria uma categoria (`{ "nome": "..." }`).
+- `PUT /categorias/{id}` — renomeia uma categoria.
+- `DELETE /categorias/{id}` — exclui uma categoria. Só funciona se
+  **nenhum produto** estiver vinculado a ela (`produtos.categoria_id`);
+  caso contrário devolve `409` com uma mensagem informando quantos
+  produtos ainda usam essa categoria. Não desvincula nem exclui produtos
+  automaticamente — é preciso mudar a categoria desses produtos (ou
+  excluí-los) antes de conseguir excluir a categoria.
