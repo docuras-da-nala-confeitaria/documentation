@@ -36,6 +36,13 @@ do horário comercial; `prod` sempre ligado, com banco em multi-AZ).
   funciona como notificação/auditoria para um e-mail fixo cadastrado, não
   como entrega real ao e-mail dinâmico de quem solicitou a redefinição
   (isso exigiria integração futura com um serviço de envio transacional).
+- **Lambda do cardápio + ALB interno próprio** — gera a imagem do
+  cardápio (Pillow), lendo os produtos direto do RDS. Empacotada como
+  imagem de container (dependência nativa do Pillow não cabe num zip
+  simples). Fica atrás do seu próprio ALB interno, exposto só ao
+  backend (não ao API Gateway) — o backend continua chamando isso como
+  uma URL HTTP comum, igual já funciona hoje em Docker; nenhuma
+  mudança de código no backend é necessária pra essa migração.
 
 ## Rede
 
@@ -53,5 +60,6 @@ sujeitos a mudança e vivem em `sistemas/infra-aws/` (README, `DEPLOY.md`,
 `modules/`, `environments/`) no repositório do sistema.
 
 Também fora do escopo desta infraestrutura, hoje: pipeline de CI/CD
-(build e deploy automatizados), domínio próprio/certificado customizado, e
-envio real de e-mail transacional.
+(build e deploy automatizados — inclui a imagem da Lambda do cardápio,
+cujo build/push ainda é manual), domínio próprio/certificado
+customizado, e envio real de e-mail transacional.
